@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" width="420" height="80">
+  <defs>
+    <style>
+      .logo-name { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 22px; font-weight: 800; fill: #ffffff; letter-spacing: 2.5px; }
+      .logo-sub  { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 9.5px; font-weight: 700; fill: #2979ff; letter-spacing: 3px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="420" height="80" rx="6" fill="#1e2027"/>
+
+  <!-- Triangle icon — scaled to ~50x45px, offset 22,17 -->
+  <g transform="translate(22, 8) scale(1.55)">
+    <!-- Outer white triangle (two sides, no base) -->
+    <polyline points="2,30 18,4 34,30" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- Inner blue triangle (two sides, no base) -->
+    <polyline points="8,30 18,12 28,30" fill="none" stroke="#2979ff" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- Baseline -->
+    <line x1="2" y1="30" x2="34" y2="30" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text -->
+  <text x="90" y="42" class="logo-name">MEP SOLUTIONS</text>
+  <text x="91" y="58" class="logo-sub">+ ARCHITECTURAL DRAFTING</text>
+</svg>

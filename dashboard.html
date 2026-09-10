@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEP Solutions – Client Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e2027; --bg2: #2a2d38; --bg3: #32364a;
+      --blue: #2979ff; --blue-light: #5393ff; --blue-glow: rgba(41,121,255,0.12);
+      --text: #e8eaf0; --text-muted: #9ea3b4; --white: #ffffff;
+      --border: rgba(255,255,255,0.07);
+      --green: #81c784; --yellow: #ffd54f;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav { background: var(--bg2); border-bottom: 1px solid rgba(41,121,255,0.15); padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .sync-status { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+    .sync-status.ok  { color: #81c784; }
+    .sync-status.err { color: #ef9a9a; }
+    .btn-sync { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.3rem 0.8rem; border-radius: 5px; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
+    .btn-sync:hover { border-color: rgba(41,121,255,0.4); color: var(--blue-light); }
+    .btn-sync:disabled { opacity: 0.4; cursor: default; }
+    .btn-gear { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: 34px; height: 34px; border-radius: 5px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .btn-gear:hover { border-color: rgba(41,121,255,0.4); color: var(--blue-light); }
+
+    /* MAIN */
+    main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+
+    /* SETUP BANNER */
+    .setup-banner { background: rgba(41,121,255,0.08); border: 1px solid rgba(41,121,255,0.25); border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .setup-banner p { font-size: 0.88rem; color: var(--text-muted); }
+    .setup-banner strong { color: var(--text); }
+    .btn-connect { background: var(--blue); color: white; border: none; padding: 0.45rem 1.1rem; border-radius: 5px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+    .btn-connect:hover { background: var(--blue-light); }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .stat-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .stat-value { font-size: 1.9rem; font-weight: 800; color: var(--white); line-height: 1; }
+    .stat-value.blue   { color: var(--blue-light); }
+    .stat-value.green  { color: var(--green); }
+    .stat-value.yellow { color: var(--yellow); }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .filter-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .filter-tab { padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .filter-tab:hover, .filter-tab.active { background: var(--blue-glow); border-color: rgba(41,121,255,0.4); color: var(--blue-light); }
+    .btn-add { background: var(--blue); color: white; border: none; padding: 0.55rem 1.4rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+    .btn-add:hover { background: var(--blue-light); }
+
+    /* TABLE */
+    .table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 820px; }
+    th { padding: 0.75rem 1rem; text-align: left; font-size: 0.63rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.1); white-space: nowrap; }
+    td { padding: 0.9rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .client-name { font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 6px; }
+    .form-pill { font-size: 0.6rem; font-weight: 700; background: rgba(41,121,255,0.15); color: var(--blue-light); border: 1px solid rgba(41,121,255,0.3); border-radius: 100px; padding: 0.1rem 0.5rem; white-space: nowrap; }
+    .client-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 0.22rem 0.7rem; border-radius: 100px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
+    .b-new       { background: rgba(158,163,180,0.12); color: #9ea3b4;  border: 1px solid rgba(158,163,180,0.25); }
+    .b-quote     { background: rgba(41,121,255,0.12);  color: #5393ff;  border: 1px solid rgba(41,121,255,0.3); }
+    .b-followup  { background: rgba(255,152,0,0.12);   color: #ffa726;  border: 1px solid rgba(255,152,0,0.3); }
+    .b-agreement { background: rgba(171,71,188,0.12);  color: #ce93d8;  border: 1px solid rgba(171,71,188,0.3); }
+    .b-deposit   { background: rgba(0,188,212,0.12);   color: #26c6da;  border: 1px solid rgba(0,188,212,0.3); }
+    .b-inprog    { background: rgba(83,147,255,0.15);  color: #82b1ff;  border: 1px solid rgba(83,147,255,0.35); }
+    .b-delivered { background: rgba(38,166,154,0.12);  color: #4db6ac;  border: 1px solid rgba(38,166,154,0.3); }
+    .b-invoiced  { background: rgba(255,193,7,0.12);   color: #ffd54f;  border: 1px solid rgba(255,193,7,0.3); }
+    .b-paid      { background: rgba(102,187,106,0.12); color: #81c784;  border: 1px solid rgba(102,187,106,0.3); }
+    .b-lost      { background: rgba(239,83,80,0.12);   color: #ef9a9a;  border: 1px solid rgba(239,83,80,0.3); }
+
+    .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .dot.yes { background: var(--green); }
+    .dot.no  { background: #5a5f72; }
+
+    /* ACTIONS */
+    .actions { display: flex; gap: 0.5rem; }
+    .btn-sm { padding: 0.28rem 0.75rem; border-radius: 5px; font-size: 0.75rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.15s; }
+    .btn-sm.edit:hover { background: var(--blue-glow); color: var(--blue-light); border-color: rgba(41,121,255,0.4); }
+    .btn-sm.del:hover  { background: rgba(239,83,80,0.1); color: #ef9a9a; border-color: rgba(239,83,80,0.3); }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+    .empty .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    /* MODAL (shared) */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }
+    .overlay.open { display: flex; }
+    .modal { background: var(--bg2); border: 1px solid rgba(41,121,255,0.2); border-radius: 12px; padding: 2rem; width: 100%; max-height: 90vh; overflow-y: auto; }
+    .modal.sm { max-width: 480px; }
+    .modal.lg { max-width: 620px; }
+    .modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-hd h2 { font-size: 1.1rem; font-weight: 800; color: var(--white); }
+    .btn-x { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; line-height: 1; }
+    .btn-x:hover { color: var(--white); }
+
+    /* SETTINGS MODAL */
+    .setting-row { margin-bottom: 1.2rem; }
+    .setting-row label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .setting-row input { width: 100%; background: var(--bg3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 0.6rem 0.9rem; font-size: 0.88rem; color: var(--text); font-family: inherit; outline: none; }
+    .setting-row input:focus { border-color: rgba(41,121,255,0.5); }
+    .setting-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.5; }
+    .setting-hint a { color: var(--blue-light); }
+
+    /* CLIENT FORM */
+    .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .fg { display: flex; flex-direction: column; gap: 0.4rem; }
+    .fg.full { grid-column: 1 / -1; }
+    .fg label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .fg input, .fg select, .fg textarea { background: var(--bg3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 0.55rem 0.85rem; font-size: 0.88rem; color: var(--text); font-family: inherit; outline: none; width: 100%; }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: rgba(41,121,255,0.5); }
+    .fg textarea { resize: vertical; min-height: 72px; }
+    select option { background: #2a2d38; }
+    .sec-label { grid-column: 1 / -1; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-light); padding-top: 0.5rem; }
+    .divider { grid-column: 1 / -1; border: none; border-top: 1px solid var(--border); }
+    .checks { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-top: 4px; }
+    .chk { display: flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; color: var(--text); cursor: pointer; }
+    .chk input { width: auto; cursor: pointer; accent-color: var(--blue); }
+    .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
+    .btn-cancel { padding: 0.6rem 1.4rem; border-radius: 6px; font-size: 0.88rem; font-weight: 600; background: transparent; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; }
+    .btn-save { padding: 0.6rem 1.6rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; background: var(--blue); border: none; color: white; cursor: pointer; }
+    .btn-save:hover { background: var(--blue-light); }
+
+    @media (max-width: 640px) {
+      main { padding: 1rem; }
+      nav { padding: 0 1rem; }
+      .fgrid { grid-template-columns: 1fr; }
+      .fg.full, .sec-label, .divider { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <svg width="34" height="30" viewBox="0 0 36 32" fill="none">
+      <polyline points="2,30 18,4 34,30" stroke="white" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <polyline points="8,30 18,12 28,30" stroke="#2979ff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="2" y1="30" x2="34" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div style="font-size:0.9rem;font-weight:800;color:white;letter-spacing:0.04em;line-height:1.1;">MEP SOLUTIONS</div>
+      <div style="font-size:0.52rem;font-weight:600;color:#2979ff;letter-spacing:0.14em;">CLIENT DASHBOARD</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="sync-status" id="sync-status">Not connected</span>
+    <button class="btn-sync" id="btn-sync" onclick="manualSync()" title="Sync now">↻ Sync</button>
+    <button class="btn-gear" onclick="openSettings()" title="Settings">⚙</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Setup banner (shown when no sheet URL configured) -->
+  <div class="setup-banner" id="setup-banner" style="display:none;">
+    <p><strong>Connect Google Sheets</strong> to automatically import quote requests from your contact form.</p>
+    <button class="btn-connect" onclick="openSettings()">Connect Sheet →</button>
+  </div>
+
+  <div class="stats-grid" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="filter-tabs" id="filters">
+      <button class="filter-tab active" data-f="all">All</button>
+      <button class="filter-tab" data-f="New Lead">New Lead</button>
+      <button class="filter-tab" data-f="Quote Sent">Quote Sent</button>
+      <button class="filter-tab" data-f="Follow-up">Follow-up</button>
+      <button class="filter-tab" data-f="Agreement Signed">Agreement</button>
+      <button class="filter-tab" data-f="Deposit Received">Deposit</button>
+      <button class="filter-tab" data-f="In Progress">In Progress</button>
+      <button class="filter-tab" data-f="Delivered">Delivered</button>
+      <button class="filter-tab" data-f="Invoice Sent">Invoice Sent</button>
+      <button class="filter-tab" data-f="Paid">Paid</button>
+      <button class="filter-tab" data-f="Lost">Lost</button>
+    </div>
+    <button class="btn-add" onclick="openModal()">+ Add Client</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Project</th>
+          <th>Services</th>
+          <th>Status</th>
+          <th>Quote</th>
+          <th>Deposit (50%)</th>
+          <th>Balance (50%)</th>
+          <th>Added</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" style="display:none;">
+      <div class="icon">📋</div>
+      <p>No clients yet. Click <strong>+ Add Client</strong> or connect Google Sheets to auto-import leads.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- SETTINGS MODAL -->
+<div class="overlay" id="settings-overlay">
+  <div class="modal sm">
+    <div class="modal-hd">
+      <h2>⚙ Settings</h2>
+      <button class="btn-x" onclick="closeSettings()">×</button>
+    </div>
+
+    <div class="setting-row">
+      <label>Google Sheets CSV URL</label>
+      <input id="gs-url-input" type="url" placeholder="https://docs.google.com/spreadsheets/d/…/pub?output=csv" />
+      <p class="setting-hint">
+        Publish your Google Sheet (File → Share → Publish to web → CSV) and paste the URL here.
+        New form submissions will appear automatically as <strong style="color:var(--blue-light)">New Lead</strong>.
+      </p>
+    </div>
+
+    <div class="setting-row">
+      <label>Column mapping (in your Google Sheet)</label>
+      <p class="setting-hint" style="margin-top:0;">
+        Set up your sheet with these columns in order:<br>
+        <strong style="color:var(--text);">A: Timestamp &nbsp;·&nbsp; B: Name &nbsp;·&nbsp; C: Email &nbsp;·&nbsp; D: Phone &nbsp;·&nbsp; E: Service &nbsp;·&nbsp; F: Message</strong>
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+      <button class="btn-save" onclick="saveSettings()">Save &amp; Sync</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal lg">
+    <div class="modal-hd">
+      <h2 id="modal-title">Add Client</h2>
+      <button class="btn-x" onclick="closeModal()">×</button>
+    </div>
+    <form id="cform" onsubmit="saveClient(event)">
+      <div class="fgrid">
+
+        <div class="sec-label">Client Info</div>
+        <div class="fg"><label>Full Name *</label><input id="f-name" type="text" placeholder="Jane Smith" required /></div>
+        <div class="fg"><label>Email</label><input id="f-email" type="email" placeholder="jane@email.com" /></div>
+        <div class="fg"><label>Phone</label><input id="f-phone" type="tel" placeholder="305-000-0000" /></div>
+        <div class="fg"><label>Property Address</label><input id="f-addr" type="text" placeholder="123 Main St, Miami, FL" /></div>
+
+        <hr class="divider" />
+        <div class="sec-label">Project</div>
+        <div class="fg">
+          <label>Project Type</label>
+          <select id="f-type">
+            <option value="">— Select —</option>
+            <option>New Construction</option>
+            <option>Addition</option>
+            <option>Renovation</option>
+          </select>
+        </div>
+        <div class="fg"><label>Square Footage</label><input id="f-sqft" type="text" placeholder="2,500 sq ft" /></div>
+        <div class="fg full">
+          <label>Services Requested</label>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="s-arch" /> Architectural Drafting</label>
+            <label class="chk"><input type="checkbox" id="s-mech" /> Mechanical (HVAC)</label>
+            <label class="chk"><input type="checkbox" id="s-elec" /> Electrical</label>
+            <label class="chk"><input type="checkbox" id="s-plmb" /> Plumbing</label>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <div class="sec-label">Status &amp; Financials</div>
+        <div class="fg">
+          <label>Status</label>
+          <select id="f-status">
+            <option>New Lead</option>
+            <option>Quote Sent</option>
+            <option>Follow-up</option>
+            <option>Agreement Signed</option>
+            <option>Deposit Received</option>
+            <option>In Progress</option>
+            <option>Delivered</option>
+            <option>Invoice Sent</option>
+            <option>Paid</option>
+            <option>Lost</option>
+          </select>
+        </div>
+        <div class="fg"><label>Quote Amount ($)</label><input id="f-quote" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+        <div class="fg"><label>Deposit Paid?</label><label class="chk" style="margin-top:6px;"><input type="checkbox" id="f-dep" /> Deposit received</label></div>
+        <div class="fg"><label>Balance Paid?</label><label class="chk" style="margin-top:6px;"><input type="checkbox" id="f-bal" /> Balance received</label></div>
+
+        <hr class="divider" />
+        <div class="fg full"><label>Notes</label><textarea id="f-notes" placeholder="Project details, deadlines, anything relevant…"></textarea></div>
+
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ── Storage keys ────────────────────────────────────────────────────────────
+  const DATA_KEY    = 'mep_dash_v2';
+  const GS_URL_KEY  = 'mep_gs_url';
+  const SEEN_KEY    = 'mep_seen_ids'; // tracks which sheet rows we've already imported
+
+  // ── State ───────────────────────────────────────────────────────────────────
+  let clients     = load(DATA_KEY, []);
+  let seenIds     = new Set(load(SEEN_KEY, []));
+  let gsUrl       = localStorage.getItem(GS_URL_KEY) || '';
+  let editId      = null;
+  let activeFilter= 'all';
+
+  function load(key, def) {
+    try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
+  }
+  function persist() {
+    localStorage.setItem(DATA_KEY, JSON.stringify(clients));
+    localStorage.setItem(SEEN_KEY, JSON.stringify([...seenIds]));
+  }
+
+  // ── Badge map ───────────────────────────────────────────────────────────────
+  const BADGE = {
+    'New Lead':'b-new','Quote Sent':'b-quote','Follow-up':'b-followup',
+    'Agreement Signed':'b-agreement','Deposit Received':'b-deposit',
+    'In Progress':'b-inprog','Delivered':'b-delivered',
+    'Invoice Sent':'b-invoiced','Paid':'b-paid','Lost':'b-lost'
+  };
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function fmt$(n) { return n ? '$' + parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—'; }
+  function fmtDate(iso) { if(!iso) return '—'; return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}); }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function svcs(c) { return [c.arch?'Arch':'',c.mech?'HVAC':'',c.elec?'Elec':'',c.plmb?'Plmb':''].filter(Boolean).join(', ')||'—'; }
+
+  // ── CSV parser ──────────────────────────────────────────────────────────────
+  function parseCSV(text) {
+    return text.split('\n').map(line => {
+      const cols = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { cols.push(cur.trim().replace(/^"|"$/g,'')); cur = ''; }
+        else { cur += ch; }
+      }
+      cols.push(cur.trim().replace(/^"|"$/g,''));
+      return cols;
+    }).filter(r => r.some(c => c.trim()));
+  }
+
+  // ── Google Sheets sync ──────────────────────────────────────────────────────
+  async function syncFromSheets(showStatus = true) {
+    if (!gsUrl) {
+      setSyncStatus('Not connected', '');
+      document.getElementById('setup-banner').style.display = 'flex';
+      return;
+    }
+    document.getElementById('setup-banner').style.display = 'none';
+    if (showStatus) setSyncStatus('Syncing…', '');
+    const syncBtn = document.getElementById('btn-sync');
+    syncBtn.disabled = true;
+
+    try {
+      // Add cache-buster so we always get fresh data
+      const url = gsUrl + (gsUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      const rows = parseCSV(text);
+
+      if (rows.length < 2) {
+        setSyncStatus('Sheet empty or no data', '');
+        return;
+      }
+
+      let added = 0;
+      // rows[0] = headers, rows[1+] = data
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        // Expected columns: A=Timestamp, B=Name, C=Email, D=Phone, E=Service, F=Message
+        const ts      = row[0] || '';
+        const name    = (row[1] || '').trim();
+        const email   = (row[2] || '').trim();
+        const phone   = (row[3] || '').trim();
+        const service = (row[4] || '').trim();
+        const message = (row[5] || '').trim();
+
+        if (!name) continue;
+
+        // Use timestamp+email as unique key to prevent duplicates
+        const uid = (ts + '|' + email + '|' + name).toLowerCase().replace(/\s+/g,'');
+        if (seenIds.has(uid)) continue;
+        seenIds.add(uid);
+
+        // Build notes from form data
+        const notes = [
+          service  ? 'Service requested: ' + service : '',
+          message  ? 'Message: ' + message : '',
+        ].filter(Boolean).join('\n');
+
+        clients.unshift({
+          id:       'gs_' + Date.now() + '_' + i,
+          name, email, phone,
+          addr: '', type: '', sqft: '',
+          status: 'New Lead',
+          quote: '', notes,
+          arch: false, mech: false, elec: false, plmb: false,
+          dep: false, bal: false,
+          fromForm: true,
+          date: ts ? new Date(ts).toISOString() : new Date().toISOString(),
+        });
+        added++;
+      }
+
+      persist();
+      if (added > 0) render();
+      const now = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      setSyncStatus('Synced ' + now + (added ? ' · ' + added + ' new' : ''), 'ok');
+
+    } catch (e) {
+      console.error('Sheets sync error:', e);
+      setSyncStatus('Sync failed — check URL', 'err');
+    } finally {
+      syncBtn.disabled = false;
+      renderTable(); // always refresh table
+    }
+  }
+
+  function setSyncStatus(msg, cls) {
+    const el = document.getElementById('sync-status');
+    el.textContent = msg;
+    el.className = 'sync-status ' + cls;
+  }
+
+  function manualSync() { syncFromSheets(true); }
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  function renderStats() {
+    const total   = clients.length;
+    const active  = clients.filter(c => c.status === 'In Progress').length;
+    const revenue = clients.filter(c => c.status === 'Paid').reduce((s,c) => s+(parseFloat(c.quote)||0), 0);
+    const invPend = clients.filter(c => c.status === 'Invoice Sent').length;
+    const pipeline= clients.filter(c => !['Paid','Lost'].includes(c.status)).reduce((s,c) => s+(parseFloat(c.quote)||0), 0);
+    document.getElementById('stats').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value">${total}</div></div>
+      <div class="stat-card"><div class="stat-label">Active Projects</div><div class="stat-value blue">${active}</div></div>
+      <div class="stat-card"><div class="stat-label">Revenue Collected</div><div class="stat-value green">${fmt$(revenue)}</div></div>
+      <div class="stat-card"><div class="stat-label">Pending Invoices</div><div class="stat-value yellow">${invPend}</div></div>
+      <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value" style="font-size:1.5rem;">${fmt$(pipeline)}</div></div>
+    `;
+  }
+
+  function renderTable() {
+    const list = activeFilter === 'all' ? clients : clients.filter(c => c.status === activeFilter);
+    const tbody = document.getElementById('tbody');
+    const empty = document.getElementById('empty');
+    if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    tbody.innerHTML = list.map(c => {
+      const q = parseFloat(c.quote)||0;
+      const dep = q*0.5, bal = q*0.5;
+      const bc = BADGE[c.status]||'b-new';
+      const formTag = c.fromForm ? '<span class="form-pill">form</span>' : '';
+      return `<tr>
+        <td>
+          <div class="client-name">${esc(c.name)} ${formTag}</div>
+          <div class="client-sub">${esc(c.email||'')}${c.phone?' · '+esc(c.phone):''}</div>
+          ${c.addr?`<div class="client-sub" style="font-size:0.72rem;">${esc(c.addr)}</div>`:''}
+        </td>
+        <td>
+          <div style="color:var(--white);font-weight:600;">${esc(c.type||'—')}</div>
+          <div class="client-sub">${esc(c.sqft||'')}</div>
+        </td>
+        <td style="font-size:0.8rem;color:var(--text-muted);">${svcs(c)}</td>
+        <td><span class="badge ${bc}">${esc(c.status)}</span></td>
+        <td style="font-weight:700;color:var(--white);">${fmt$(q||null)}</td>
+        <td><span class="dot ${c.dep?'yes':'no'}"></span><span style="color:${c.dep?'var(--green)':'var(--text-muted)'};">${q?fmt$(dep):'—'}</span></td>
+        <td><span class="dot ${c.bal?'yes':'no'}"></span><span style="color:${c.bal?'var(--green)':'var(--text-muted)'};">${q?fmt$(bal):'—'}</span></td>
+        <td style="font-size:0.78rem;color:var(--text-muted);">${fmtDate(c.date)}</td>
+        <td><div class="actions">
+          <button class="btn-sm edit" onclick="openModal('${c.id}')">Edit</button>
+          <button class="btn-sm del"  onclick="delClient('${c.id}')">✕</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function render() { renderStats(); renderTable(); }
+
+  // ── Filters ─────────────────────────────────────────────────────────────────
+  document.getElementById('filters').addEventListener('click', e => {
+    if (!e.target.matches('.filter-tab')) return;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    activeFilter = e.target.dataset.f;
+    renderTable();
+  });
+
+  // ── Settings modal ──────────────────────────────────────────────────────────
+  function openSettings() {
+    document.getElementById('gs-url-input').value = gsUrl;
+    document.getElementById('settings-overlay').classList.add('open');
+  }
+  function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
+  function saveSettings() {
+    gsUrl = document.getElementById('gs-url-input').value.trim();
+    localStorage.setItem(GS_URL_KEY, gsUrl);
+    closeSettings();
+    if (gsUrl) syncFromSheets(true);
+    else { setSyncStatus('Not connected', ''); document.getElementById('setup-banner').style.display='flex'; }
+  }
+  document.getElementById('settings-overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeSettings(); });
+
+  // ── Client modal ────────────────────────────────────────────────────────────
+  function openModal(id) {
+    editId = id || null;
+    document.getElementById('modal-title').textContent = id ? 'Edit Client' : 'Add Client';
+    document.getElementById('cform').reset();
+    if (id) { const c = clients.find(x=>x.id===id); if(c) fillForm(c); }
+    document.getElementById('overlay').classList.add('open');
+  }
+  function closeModal() { document.getElementById('overlay').classList.remove('open'); editId=null; }
+  document.getElementById('overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+  function fillForm(c) {
+    const set = (id,v) => { const el=document.getElementById(id); if(el.tagName==='SELECT') el.value=v||''; else el.value=v||''; };
+    set('f-name',c.name); set('f-email',c.email); set('f-phone',c.phone);
+    set('f-addr',c.addr); set('f-type',c.type); set('f-sqft',c.sqft);
+    set('f-status',c.status); set('f-quote',c.quote); set('f-notes',c.notes);
+    document.getElementById('s-arch').checked=!!c.arch;
+    document.getElementById('s-mech').checked=!!c.mech;
+    document.getElementById('s-elec').checked=!!c.elec;
+    document.getElementById('s-plmb').checked=!!c.plmb;
+    document.getElementById('f-dep').checked=!!c.dep;
+    document.getElementById('f-bal').checked=!!c.bal;
+  }
+
+  function saveClient(e) {
+    e.preventDefault();
+    const existing = editId ? clients.find(x=>x.id===editId) : null;
+    const entry = {
+      id:      editId || Date.now().toString(),
+      name:    document.getElementById('f-name').value.trim(),
+      email:   document.getElementById('f-email').value.trim(),
+      phone:   document.getElementById('f-phone').value.trim(),
+      addr:    document.getElementById('f-addr').value.trim(),
+      type:    document.getElementById('f-type').value,
+      sqft:    document.getElementById('f-sqft').value.trim(),
+      status:  document.getElementById('f-status').value,
+      quote:   document.getElementById('f-quote').value,
+      notes:   document.getElementById('f-notes').value.trim(),
+      arch:    document.getElementById('s-arch').checked,
+      mech:    document.getElementById('s-mech').checked,
+      elec:    document.getElementById('s-elec').checked,
+      plmb:    document.getElementById('s-plmb').checked,
+      dep:     document.getElementById('f-dep').checked,
+      bal:     document.getElementById('f-bal').checked,
+      fromForm: existing ? existing.fromForm : false,
+      date:    existing ? existing.date : new Date().toISOString(),
+    };
+    clients = editId ? clients.map(c=>c.id===editId?entry:c) : [entry,...clients];
+    persist(); closeModal(); render();
+  }
+
+  function delClient(id) {
+    if (!confirm('Remove this client?')) return;
+    clients = clients.filter(c=>c.id!==id);
+    persist(); render();
+  }
+
+  // ── Init ────────────────────────────────────────────────────────────────────
+  render();
+  syncFromSheets(false); // silent sync on load
+</script>
+</body>
+</html>
