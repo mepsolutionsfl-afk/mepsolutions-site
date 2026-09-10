@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electrical Load Calculations Explained: Why Your Panel Size Matters | MEP Solutions</title>
+  <meta name="description" content="Undersized electrical service is a common cause of permit delays and future headaches. Learn how load calculations work, why panel sizing matters, and what Florida homeowners should ask their engineer." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mepsolutions.design/article-electrical-load-calculations.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Electrical Load Calculations Explained: Why Your Panel Size Matters",
+    "description": "Undersized electrical service is a common cause of permit delays and future headaches. Learn how load calculations work, why panel sizing matters, and what Florida homeowners should ask their engineer.",
+    "datePublished": "2026-09-10",
+    "dateModified": "2026-09-10",
+    "author": { "@type": "Organization", "name": "MEP Solutions", "url": "https://mepsolutions.design" },
+    "publisher": { "@type": "Organization", "name": "MEP Solutions", "url": "https://mepsolutions.design" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://mepsolutions.design/article-electrical-load-calculations.html" }
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/favicon-192.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --charcoal: #1e2027; --charcoal-light: #2a2d38;
+      --blue: #2979ff; --blue-light: #5393ff; --blue-glow: rgba(41,121,255,0.15);
+      --text: #e8eaf0; --text-muted: #9ea3b4; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--charcoal); color: var(--text); line-height: 1.7; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(30,32,39,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(41,121,255,0.15); display: flex; align-items: center; justify-content: space-between; padding: 0 6%; height: 68px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--blue-light); }
+    .nav-cta { background: var(--blue); color: var(--white) !important; padding: 0.45rem 1.2rem; border-radius: 4px; transition: background 0.2s !important; }
+    .nav-cta:hover { background: var(--blue-light) !important; }
+    .article-wrap { max-width: 740px; margin: 0 auto; padding: 130px 6% 100px; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; margin-bottom: 2.5rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--blue-light); }
+    .article-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .article-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.65rem; border-radius: 100px; background: rgba(0,188,212,0.1); color: #26c6da; border: 1px solid rgba(0,188,212,0.3); }
+    .article-date { font-size: 0.82rem; color: var(--text-muted); }
+    .article-wrap h1 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; color: var(--white); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 2.5rem; }
+    .article-body { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2.5rem; }
+    .article-body p { font-size: 1.05rem; color: var(--text); line-height: 1.8; margin-bottom: 1.6rem; }
+    .article-body p:last-child { margin-bottom: 0; }
+    .article-cta { margin-top: 4rem; background: var(--charcoal-light); border: 1px solid rgba(41,121,255,0.2); border-radius: 10px; padding: 2.2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .article-cta h3 { font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.3rem; }
+    .article-cta p { font-size: 0.88rem; color: var(--text-muted); }
+    .btn { display: inline-block; padding: 0.8rem 1.8rem; border-radius: 5px; font-weight: 600; font-size: 0.9rem; text-decoration: none; background: var(--blue); color: var(--white); transition: all 0.2s; white-space: nowrap; box-shadow: 0 0 20px rgba(41,121,255,0.3); }
+    .btn:hover { background: var(--blue-light); transform: translateY(-1px); }
+    footer { background: var(--charcoal-light); border-top: 1px solid rgba(255,255,255,0.06); padding: 2.5rem 6%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--blue-light); }
+    .footer-copy { color: var(--text-muted); font-size: 0.82rem; }
+    @media (max-width: 640px) { .nav-links { display: none; } .article-cta { flex-direction: column; } footer { flex-direction: column; text-align: center; } }
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HPQED0MF8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4HPQED0MF8');
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <svg width="40" height="36" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="2,30 18,4 34,30" stroke="white" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <polyline points="8,30 18,12 28,30" stroke="#2979ff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <line x1="2" y1="30" x2="34" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span style="display:flex;flex-direction:column;line-height:1.1;">
+        <span style="color:white;font-size:1.1rem;font-weight:800;letter-spacing:0.05em;">MEP</span>
+        <span style="color:#2979ff;font-size:0.65rem;font-weight:600;letter-spacing:0.2em;">SOLUTIONS</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#markets">Markets</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="locations.html">Locations</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Get a Quote</a></li>
+    </ul>
+  </nav>
+
+  <div class="article-wrap">
+
+    <a href="resources.html" class="back-link">← Back to Resources</a>
+
+    <div class="article-meta">
+      <span class="article-tag">Electrical</span>
+      <span class="article-date">September 10, 2026</span>
+    </div>
+
+    <h1>Electrical Load Calculations Explained: Why Your Panel Size Matters</h1>
+
+    <div class="article-body">
+      <p>Ask most homeowners what size electrical panel their house needs, and the honest answer is usually "whatever the electrician said." That's not a knock on homeowners — it's simply not something most people think about until it becomes a problem. But panel size, and the load calculation behind it, is one of the more consequential decisions in a home's electrical design. Get it right and the system quietly does its job for decades. Get it wrong and you end up with tripped breakers, an electrician telling you the panel needs to be upgraded mid-renovation, or a permit reviewer sending your plans back for revisions.</p>
+
+      <p>A load calculation is simply the engineering exercise of adding up everything in a home that draws electricity — general lighting and receptacles, kitchen appliances, laundry equipment, HVAC systems, water heaters, pool equipment, EV chargers, and anything else on the drawing board — and determining the total demand the electrical service needs to support. It sounds straightforward, but the calculation isn't just addition. Not everything runs at the same time or at full capacity simultaneously, so the National Electrical Code provides demand factors that allow certain loads to be calculated at less than 100 percent, reflecting realistic usage patterns rather than a worst-case scenario that would result in dramatically oversized (and unnecessarily expensive) services.</p>
+
+      <p>This is where a common misconception causes trouble: bigger isn't automatically better. An oversized panel adds cost without adding value, and it doesn't fix a poorly planned circuit layout. An undersized panel, on the other hand, creates real problems — nuisance breaker trips, no room to add circuits later, and in some cases an inability to support upgrades homeowners want down the road, like a spa, an outdoor kitchen, or a second EV charger. The goal of a proper load calculation is to size the service accurately for the home as designed, with reasonable room for the future, not to guess in either direction.</p>
+
+      <p>Florida homes add a few wrinkles that make this calculation especially important to get right. Central air conditioning is a major, near-constant load for most of the year, and homes with features like pool pumps, spa equipment, generators, or electric vehicle charging stations add demand that a generic calculation might miss. Larger custom homes with multiple HVAC zones, expansive outdoor living areas, and smart-home systems can easily push total demand well beyond what a standard formula would predict, which is exactly why these calculations need to be based on the home's actual design rather than a rule of thumb from a different project.</p>
+
+      <p>The load calculation also directly affects permitting. Florida Building Code and the National Electrical Code (as adopted by the state) require documentation showing that the electrical service and panel are sized to handle the calculated demand, with appropriate overcurrent protection and circuit breakdowns. Plans that arrive at the permitting office without a clear, code-compliant load calculation are one of the more common reasons electrical drawings get sent back for corrections — which costs homeowners and builders time they usually don't want to lose. It's a detail that's easy to overlook on paper but expensive to fix once framing and rough-in are already underway.</p>
+
+      <p>For homeowners and builders, the practical takeaway is this: ask whether the electrical plans include a documented load calculation, and don't assume "we've always used a 200-amp panel" is an engineering answer. It might be the right answer, but it should come from an actual calculation based on your home's specific mix of equipment, not habit. A properly sized panel, backed by real numbers, gives you a system that has room to grow, passes review the first time, and won't leave you renegotiating with an electrician mid-project.</p>
+
+      <p>This kind of upfront planning pays off well beyond the permit stage. A home wired to a load calculation that reflects its real, current design — rather than an assumption carried over from a different project — is less likely to need a service upgrade five years later just to add a hot tub or a second EV charger. In a market where more Florida homeowners are adding exactly those kinds of amenities, that extra bit of engineering discipline at the design stage tends to be one of the more cost-effective decisions in the whole project.</p>
+    </div>
+
+    <div class="article-cta">
+      <div>
+        <h3>Need electrical plans for your Florida home?</h3>
+        <p>We deliver permit-ready electrical drawings with accurate load calculations and panel sizing built in.</p>
+      </div>
+      <a href="index.html#contact" class="btn">Get a Free Quote</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="28" height="25" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="2,30 18,4 34,30" stroke="white" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <polyline points="8,30 18,12 28,30" stroke="#2979ff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <line x1="2" y1="30" x2="34" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span style="font-size:1rem;font-weight:700;color:white;">MEP <span style="color:#2979ff;">Solutions</span></span>
+    </a>
+    <div class="footer-links">
+      <a href="index.html#services">Services</a>
+      <a href="index.html#markets">Markets</a>
+      <a href="index.html#about">About</a>
+      <a href="locations.html">Locations</a>
+      <a href="resources.html">Resources</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <p class="footer-copy">© 2026 MEP Solutions. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
